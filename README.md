@@ -1,5 +1,5 @@
 # iRestore
-A GUI for futurerestore on Windows
+A GUI wrapper for futurerestore on Windows
 
 To use, download iRestore.exe from this repository.
 
