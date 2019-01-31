@@ -167,37 +167,34 @@
             // CheckSEP
             // 
             this.CheckSEP.AutoSize = true;
-            this.CheckSEP.Checked = true;
-            this.CheckSEP.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckSEP.Enabled = false;
             this.CheckSEP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckSEP.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CheckSEP.Location = new System.Drawing.Point(12, 236);
             this.CheckSEP.Name = "CheckSEP";
-            this.CheckSEP.Size = new System.Drawing.Size(96, 17);
+            this.CheckSEP.Size = new System.Drawing.Size(192, 17);
             this.CheckSEP.TabIndex = 12;
-            this.CheckSEP.Text = "Use Latest SEP";
+            this.CheckSEP.Text = "Use Latest SEP (broken, disabled)";
             this.CheckSEP.UseVisualStyleBackColor = true;
             this.CheckSEP.CheckedChanged += new System.EventHandler(this.CheckSEP_CheckedChanged);
             // 
             // CheckBaseband
             // 
             this.CheckBaseband.AutoSize = true;
-            this.CheckBaseband.Checked = true;
-            this.CheckBaseband.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckBaseband.Enabled = false;
             this.CheckBaseband.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CheckBaseband.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CheckBaseband.Location = new System.Drawing.Point(242, 236);
             this.CheckBaseband.Name = "CheckBaseband";
-            this.CheckBaseband.Size = new System.Drawing.Size(129, 17);
+            this.CheckBaseband.Size = new System.Drawing.Size(199, 17);
             this.CheckBaseband.TabIndex = 13;
-            this.CheckBaseband.Text = "Use Latest Baseband";
+            this.CheckBaseband.Text = "Use Latest Baseband (also broken)";
             this.CheckBaseband.UseVisualStyleBackColor = true;
             this.CheckBaseband.CheckedChanged += new System.EventHandler(this.CheckBaseband_CheckedChanged);
             // 
             // ButtonSEP
             // 
             this.ButtonSEP.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(255)))));
-            this.ButtonSEP.Enabled = false;
             this.ButtonSEP.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButtonSEP.ForeColor = System.Drawing.Color.White;
             this.ButtonSEP.Location = new System.Drawing.Point(12, 287);
@@ -218,12 +215,10 @@
             this.TextSEP.ReadOnly = true;
             this.TextSEP.Size = new System.Drawing.Size(226, 22);
             this.TextSEP.TabIndex = 14;
-            this.TextSEP.Text = "Automatic";
             // 
             // ButtonBaseband
             // 
             this.ButtonBaseband.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(255)))));
-            this.ButtonBaseband.Enabled = false;
             this.ButtonBaseband.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButtonBaseband.ForeColor = System.Drawing.Color.White;
             this.ButtonBaseband.Location = new System.Drawing.Point(242, 287);
@@ -244,7 +239,6 @@
             this.TextBaseband.ReadOnly = true;
             this.TextBaseband.Size = new System.Drawing.Size(226, 22);
             this.TextBaseband.TabIndex = 16;
-            this.TextBaseband.Text = "Automatic";
             // 
             // ButtonClose
             // 

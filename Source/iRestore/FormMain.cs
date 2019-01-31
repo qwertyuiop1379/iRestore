@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -26,6 +28,24 @@ namespace iRestore
         public FormMain()
         {
             InitializeComponent();
+            if (!File.Exists(Application.StartupPath + "\\futurerestore.exe"))
+            {
+                using (var client = new WebClient())
+                {
+                    try
+                    {
+                        client.DownloadFile("http://github.com/s0uthwest/futurerestore/releases/download/224/futurerestore_win64_v224.zip", Application.StartupPath + "\\futurerestore.zip");
+                        ZipFile.ExtractToDirectory(Application.StartupPath + "\\futurerestore.zip", Application.StartupPath + "\\tmp");
+                        File.Move(Application.StartupPath + "\\tmp\\futurerestore.exe", Application.StartupPath + "\\futurerestore.exe");
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show($"Failed to download futurerestore.\n{e.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    File.Delete(Application.StartupPath + "\\futurerestore.zip");
+                    Directory.Delete(Application.StartupPath + "\\tmp");
+                }
+            }
             _syncContext = SynchronizationContext.Current;
         }
 
@@ -130,8 +150,6 @@ namespace iRestore
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
                 process.WaitForExit();
-
-                FreeConsole();
             }
         }
 
