@@ -23,7 +23,7 @@ namespace iRestore
         static extern bool FreeConsole();
 
         SynchronizationContext _syncContext;
-        private string ipsw = "", blob = "", sep = "", baseband = "";
+        private string ipsw = "", blob = "", sep = "", baseband = "", bm = "";
 
         public FormMain()
         {
@@ -109,18 +109,18 @@ namespace iRestore
 
             if (!CheckSEP.Checked)
             {
-                if (sep == "")
+                if (sep == "" || bm == "")
                 {
-                    MessageBox.Show("Please choose an SEP file.");
+                    MessageBox.Show("Please choose an SEP file and manifest.");
                     return;
                 }
             }
 
-            if (!CheckBaseband.Checked)
+            if (!CheckBaseband.Checked && !CheckNoBaseband.Checked)
             {
-                if (baseband == "")
+                if (baseband == "" || bm == "")
                 {
-                    MessageBox.Show("Please choose a baseband file.");
+                    MessageBox.Show("Please choose a baseband file and manifest.");
                     return;
                 }
             }
@@ -132,10 +132,10 @@ namespace iRestore
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = Application.StartupPath + "\\futurerestore.exe",
-                        Arguments =$"-t \"{blob}\" " +
-                            $"{(CheckSEP.Checked ? "--latest-sep" : $"-s \"{sep}\"")} " +
-                            $"{(CheckBaseband.Checked ? "--latest-baseband" : $"-b \"{baseband}\"")} " +
-                            $"{(CheckDebug.Checked ? "-d" : "")} \"{ipsw}\"",
+                        Arguments = $"-t \"{blob}\" " +
+                            $"{(CheckSEP.Checked ? "--latest-sep" : $"-s \"{sep}\" -m \"{bm}\"")} " +
+                            $"{(CheckNoBaseband.Checked ? "--no-baseband" : (CheckBaseband.Checked ? "--latest-baseband" : $"-b \"{baseband}\" -p \"{bm}\""))} " +
+                            $"{(CheckDebug.Checked ? "-d" : "")} {(CheckUpdate.Checked ? "-u" : "")} {(CheckWait.Checked ? "-w" : "")} \"{ipsw}\"",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true
@@ -145,17 +145,62 @@ namespace iRestore
                 process.OutputDataReceived += (sender, args) => Display(args.Data);
 
                 AllocConsole();
+
+                Console.WriteLine("[iRestore] Execute command: futurerestore " + process.StartInfo.Arguments);
                 
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
-                process.WaitForExit();
             }
         }
 
         void Display(string output)
         {
             _syncContext.Post(_ => Console.Out.WriteLine(output), null);
+        }
+
+        private void CheckNoBaseband_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CheckNoBaseband.Checked)
+            {
+                MessageBox.Show("Only use this option if you know what you are doing. Using this on devices that require baseband will cause a non working restore.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                CheckBaseband.Enabled = false;
+                ButtonBaseband.Enabled = false;
+                TextBaseband.Text = "None";
+            }
+            else
+            {
+                CheckBaseband.Enabled = true;
+                ButtonBaseband.Enabled = true;
+                TextBaseband.Text = CheckBaseband.Checked ? "Automatic" : Path.GetFileName(baseband);
+            }
+        }
+
+        private void ButtonHelp_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("IPSW: The version you wish to restore to. Can be downloaded from https://ipsw.me.\n\n" +
+                "SEP: Specify a custom version of SEP (stores passwords, touch id, etc) to restore. Must be compatible with restore version.\n\n" +
+                "SEP Manifest: Required if you are using a custom SEP.\n\n" +
+                "SHSH2 Blob: The saved blob for the selected restore version.\n\n" +
+                "Baseband: Specify a custom version of baseband to restore. Must be compatible with restore version.\n\n" +
+                "Baseband Manifest: Required if you are using a custom baseband.\n\n" +
+                "Would you like more help?", "Info", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                Process.Start("https://www.reddit.com/r/jailbreak/comments/alw5dd/tutorial_update_futurerestore_101_and_irestore/");
+            }
+        }
+
+        private void ButtonBManifest_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Multiselect = false;
+            fileDialog.Title = "Manifest File";
+            fileDialog.Filter = "Plist Files|*.plist";
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                bm = fileDialog.FileName;
+                TextBManifest.Text = Path.GetFileName(bm);
+            }
         }
 
         private void ButtonBlob_Click(object sender, EventArgs e)
