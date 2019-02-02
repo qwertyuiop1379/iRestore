@@ -5,7 +5,7 @@ To use, download iRestore.exe from this repository.
 
 # Changelog
 
-v1.2.2
+v1.1.2
 - Automatically checks version of latest futurerestore and installed version to decide whether to update or not
 - Downloads futurerestore directly from s0uthwest's github to avoid license issues
 - Added progress bar for download
