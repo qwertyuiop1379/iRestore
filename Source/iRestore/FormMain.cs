@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -28,25 +29,93 @@ namespace iRestore
         public FormMain()
         {
             InitializeComponent();
-            if (!File.Exists(Application.StartupPath + "\\futurerestore.exe"))
+            _syncContext = SynchronizationContext.Current;
+
+            string version = "", hashsum = "";
+            using (var client = new WebClient())
             {
-                using (var client = new WebClient())
+                try
                 {
+                    version = client.DownloadString("https://raw.githubusercontent.com/qwertyuiop1379/iRestore/master/futurerestore");
+                    hashsum = client.DownloadString("https://raw.githubusercontent.com/qwertyuiop1379/iRestore/master/hashsum");
+                }
+                catch
+                {
+                    MessageBox.Show("Could not fetch latest futurerestore version.\nYou can ignore this, but futurerestore won't be updated.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (File.Exists(Application.UserAppDataPath + "\\futurerestore.exe"))
+                {
+                    using (var stream = File.OpenRead(Application.UserAppDataPath + "\\futurerestore.exe"))
+                    {
+                        if (BitConverter.ToString(MD5.Create().ComputeHash(stream)).Replace("-", "") != hashsum.Replace(Environment.NewLine, ""))
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                Form info = new Form
+                {
+                    Text = "Info",
+                    Size = new System.Drawing.Size(300, 64),
+                    FormBorderStyle = FormBorderStyle.None,
+                    TopMost = true,
+                    Controls =
+                    {
+                        new Label
+                        {
+                            Text = "Updating Futurerestore...",
+                            AutoSize = true,
+                            Location = new System.Drawing.Point(12, 12)
+                        },
+
+                        new ProgressBar
+                        {
+                            Size = new System.Drawing.Size(276, 24),
+                            Location = new System.Drawing.Point(12, 28),
+                            Maximum = 100
+                        }
+                    }
+                };
+
+                info.Show();
+
+                client.DownloadProgressChanged += (s, e) =>
+                {
+                    ProgressBar bar = (ProgressBar)info.Controls[1];
+                    bar.Value = e.ProgressPercentage;
+                };
+
+                client.DownloadFileCompleted += (s, e) =>
+                {
+                    info.Close();
                     try
                     {
-                        client.DownloadFile("http://github.com/s0uthwest/futurerestore/releases/download/224/futurerestore_win64_v224.zip", Application.StartupPath + "\\futurerestore.zip");
-                        ZipFile.ExtractToDirectory(Application.StartupPath + "\\futurerestore.zip", Application.StartupPath + "\\tmp");
-                        File.Move(Application.StartupPath + "\\tmp\\futurerestore.exe", Application.StartupPath + "\\futurerestore.exe");
+                        ZipFile.ExtractToDirectory(Application.UserAppDataPath + "\\futurerestore.zip", Application.UserAppDataPath + "\\tmp");
+                        if (File.Exists(Application.UserAppDataPath + "\\futurerestore.exe")) File.Delete(Application.UserAppDataPath + "\\futurerestore.exe");
+                        File.Move(Application.UserAppDataPath + "\\tmp\\futurerestore.exe", Application.UserAppDataPath + "\\futurerestore.exe");
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        MessageBox.Show($"Failed to download futurerestore.\n{e.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Failed to extract futurerestore.\nError: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    File.Delete(Application.StartupPath + "\\futurerestore.zip");
-                    Directory.Delete(Application.StartupPath + "\\tmp");
+
+                    File.Delete(Application.UserAppDataPath + "\\futurerestore.zip");
+                    Directory.Delete(Application.UserAppDataPath + "\\tmp", true);
+                };
+
+                try
+                {
+                    if (File.Exists(Application.UserAppDataPath + "\\futurerestore.zip")) File.Delete(Application.UserAppDataPath + "\\futurerestore.zip");
+                    client.DownloadFileAsync(new Uri(version), Application.UserAppDataPath + "\\futurerestore.zip");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to download futurerestore.\nError: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            _syncContext = SynchronizationContext.Current;
         }
 
         private void LabelTop_MouseDown(object sender, MouseEventArgs e)
@@ -131,7 +200,7 @@ namespace iRestore
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = Application.StartupPath + "\\futurerestore.exe",
+                        FileName = Application.UserAppDataPath + "\\futurerestore.exe",
                         Arguments = $"-t \"{blob}\" " +
                             $"{(CheckSEP.Checked ? "--latest-sep" : $"-s \"{sep}\" -m \"{bm}\"")} " +
                             $"{(CheckNoBaseband.Checked ? "--no-baseband" : (CheckBaseband.Checked ? "--latest-baseband" : $"-b \"{baseband}\" -p \"{bm}\""))} " +
