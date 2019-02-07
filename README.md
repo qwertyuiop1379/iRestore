@@ -18,4 +18,5 @@ v1.0.0
 - Initial release
 
 # This uses s0uthwest's version of futurerestore
+(He removed his compiled Windows versions, so I guess I will host it here until I'm not allowed to)
 It can be found at https://github.com/s0uthwest/futurerestore
