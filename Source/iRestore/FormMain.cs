@@ -259,6 +259,31 @@ namespace iRestore
             }
         }
 
+        private void ButtonExit_Click(object s, EventArgs e)
+        {
+            Process process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Application.UserAppDataPath + "\\futurerestore.exe",
+                    Arguments = "--exit-recovery",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+
+            process.OutputDataReceived += (sender, args) => Display(args.Data);
+
+            AllocConsole();
+
+            Console.WriteLine("[iRestore] Execute command: futurerestore " + process.StartInfo.Arguments);
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+        }
+
         private void ButtonBManifest_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();

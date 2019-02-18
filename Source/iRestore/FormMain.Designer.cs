@@ -53,6 +53,7 @@
             this.CheckUpdate = new System.Windows.Forms.CheckBox();
             this.CheckWait = new System.Windows.Forms.CheckBox();
             this.ButtonHelp = new System.Windows.Forms.Button();
+            this.ButtonExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // LabelTop
@@ -264,7 +265,7 @@
             this.ButtonRestore.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ButtonRestore.Location = new System.Drawing.Point(12, 292);
             this.ButtonRestore.Name = "ButtonRestore";
-            this.ButtonRestore.Size = new System.Drawing.Size(690, 78);
+            this.ButtonRestore.Size = new System.Drawing.Size(570, 78);
             this.ButtonRestore.TabIndex = 19;
             this.ButtonRestore.Text = "Go!";
             this.ButtonRestore.UseVisualStyleBackColor = false;
@@ -356,12 +357,26 @@
             this.ButtonHelp.UseVisualStyleBackColor = false;
             this.ButtonHelp.Click += new System.EventHandler(this.ButtonHelp_Click);
             // 
+            // ButtonExit
+            // 
+            this.ButtonExit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(255)))));
+            this.ButtonExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonExit.ForeColor = System.Drawing.Color.White;
+            this.ButtonExit.Location = new System.Drawing.Point(588, 292);
+            this.ButtonExit.Name = "ButtonExit";
+            this.ButtonExit.Size = new System.Drawing.Size(114, 78);
+            this.ButtonExit.TabIndex = 29;
+            this.ButtonExit.Text = "Exit Recovery Mode";
+            this.ButtonExit.UseVisualStyleBackColor = false;
+            this.ButtonExit.Click += new System.EventHandler(this.ButtonExit_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(714, 402);
+            this.Controls.Add(this.ButtonExit);
             this.Controls.Add(this.ButtonHelp);
             this.Controls.Add(this.CheckWait);
             this.Controls.Add(this.CheckUpdate);
@@ -423,6 +438,7 @@
         private System.Windows.Forms.CheckBox CheckUpdate;
         private System.Windows.Forms.CheckBox CheckWait;
         private System.Windows.Forms.Button ButtonHelp;
+        private System.Windows.Forms.Button ButtonExit;
     }
 }
 
