@@ -1,6 +1,8 @@
 # iRestore
 A GUI wrapper for futurerestore on Windows
 
+Futurerestore lets you restore your device to an unsigned (or signed) firmware if you have saved your shsh2 blobs. If you don't have blobs, don't attempt this.
+
 To use, download iRestore.exe from this repository.
 
 # Changelog
